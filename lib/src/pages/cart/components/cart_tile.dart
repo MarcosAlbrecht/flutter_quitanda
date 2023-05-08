@@ -10,13 +10,11 @@ import '../../common_widgets/quantity_widget.dart';
 class CartTile extends StatefulWidget {
   final CartItemModel cartItem;
   final Function(CartItemModel) remove;
-  final Function() updateFinalPrice;
 
   const CartTile({
     Key? key,
     required this.cartItem,
     required this.remove,
-    required this.updateFinalPrice,
   }) : super(key: key);
 
   @override

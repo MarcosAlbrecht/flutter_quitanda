@@ -23,12 +23,13 @@ class _CartTabState extends State<CartTab> {
     });
   }
 
-  void cartTotalPrice() {
-    setState(() {
-      for (var item in appData.cartItems) {
-        totalPrice += item.totalPrice();
-      }
-    });
+  double cartTotalPrice() {
+    double total = 0.0;
+    for (var item in appData.cartItems) {
+      total += item.totalPrice();
+    }
+
+    return total;
   }
 
   @override
@@ -46,7 +47,6 @@ class _CartTabState extends State<CartTab> {
                 return CartTile(
                   cartItem: appData.cartItems[index],
                   remove: removeItemFromCart,
-                  updateFinalPrice: cartTotalPrice,
                 );
               },
             ),
@@ -77,7 +77,7 @@ class _CartTabState extends State<CartTab> {
                   style: TextStyle(fontSize: 12),
                 ),
                 Text(
-                  utilServices.priceToCurrency(totalPrice),
+                  utilServices.priceToCurrency(cartTotalPrice()),
                   style: TextStyle(
                     fontSize: 23,
                     color: CustomColors.customSwatchColor,
