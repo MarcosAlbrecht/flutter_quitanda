@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
+
 import 'package:quitanda_app/src/config/app_data.dart';
 import 'package:quitanda_app/src/config/custom_colors.dart';
-
 import 'package:quitanda_app/src/models/cart_item_model.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
 
 import '../../common_widgets/quantity_widget.dart';
 
-class CartTile extends StatelessWidget {
+class CartTile extends StatefulWidget {
   final CartItemModel cartItem;
-  final UtilServices utilServices = UtilServices();
+  final Function(CartItemModel) remove;
+  final Function() updateFinalPrice;
 
-  CartTile({
+  const CartTile({
     Key? key,
     required this.cartItem,
+    required this.remove,
+    required this.updateFinalPrice,
   }) : super(key: key);
+
+  @override
+  State<CartTile> createState() => _CartTileState();
+}
+
+class _CartTileState extends State<CartTile> {
+  final UtilServices utilServices = UtilServices();
 
   @override
   Widget build(BuildContext context) {
@@ -23,25 +33,33 @@ class CartTile extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
         leading: Image.asset(
-          cartItem.item.imageUrl,
+          widget.cartItem.item.imageUrl,
           height: 60,
           width: 60,
         ),
         title: Text(
-          cartItem.item.itemName,
+          widget.cartItem.item.itemName,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
-          utilServices.priceToCurrency(cartItem.totalPrice()),
+          utilServices.priceToCurrency(widget.cartItem.totalPrice()),
           style: TextStyle(
             color: CustomColors.customSwatchColor,
             fontWeight: FontWeight.bold,
           ),
         ),
         trailing: QuantityWidget(
-          result: (quantity) {},
-          suffixText: cartItem.item.unit,
-          value: cartItem.quantity,
+          suffixText: widget.cartItem.item.unit,
+          value: widget.cartItem.quantity,
+          isRemovable: true,
+          result: (quantity) {
+            setState(() {
+              widget.cartItem.quantity = quantity;
+              if (quantity == 0) {
+                widget.remove(widget.cartItem);
+              }
+            });
+          },
         ),
       ),
     );
