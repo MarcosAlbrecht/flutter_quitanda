@@ -43,7 +43,12 @@ class ItemTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   //imagem
-                  Expanded(child: Image.asset(item.imageUrl)),
+                  Expanded(
+                    child: Hero(
+                      tag: item.imageUrl,
+                      child: Image.asset(item.imageUrl),
+                    ),
+                  ),
                   //nome
                   Text(
                     item.itemName,
