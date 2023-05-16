@@ -15,7 +15,8 @@ class CategoryTile extends StatelessWidget {
   final VoidCallback onPressed;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
       onTap: onPressed,
       child: Align(
         alignment: Alignment.center,
