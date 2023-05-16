@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:quitanda_app/src/models/cart_item_model.dart';
 import 'package:quitanda_app/src/models/order_model.dart';
+import 'package:quitanda_app/src/pages/common_widgets/payment_dialog.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
+
+import 'order_status_widget.dart';
 
 class OrderTile extends StatelessWidget {
   final OrderModel order;
@@ -25,6 +28,7 @@ class OrderTile extends StatelessWidget {
           dividerColor: Colors.transparent,
         ),
         child: ExpansionTile(
+          initiallyExpanded: order.status == 'preparing_purchase',
           title: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,29 +44,81 @@ class OrderTile extends StatelessWidget {
             ],
           ),
           childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              height: 150,
+            IntrinsicHeight(
               child: Row(
                 children: [
+                  //Lista de produtos
                   Expanded(
                     flex: 3,
-                    child: ListView(
-                      children: order.items.map(
-                        (orderItem) {
-                          return _OrderItemWidget(
-                            utilServices: utilServices,
-                            orderItem: orderItem,
-                          );
-                        },
-                      ).toList(),
+                    child: SizedBox(
+                      height: 150,
+                      child: ListView(
+                        children: order.items.map(
+                          (orderItem) {
+                            return _OrderItemWidget(
+                              utilServices: utilServices,
+                              orderItem: orderItem,
+                            );
+                          },
+                        ).toList(),
+                      ),
                     ),
                   ),
+                  //Divisao
+                  VerticalDivider(
+                    color: Colors.grey.shade300,
+                    thickness: 2,
+                    width: 8,
+                  ),
+                  //Status do pedido
                   Expanded(
                     flex: 2,
-                    child: Container(color: Colors.blue),
+                    child: OrderStatusWidget(
+                      isOverdue: order.overdueDateTime.isBefore(DateTime.now()),
+                      status: order.status,
+                    ),
                   ),
                 ],
+              ),
+            ),
+            //Total Geral
+            Text.rich(
+              TextSpan(
+                style: const TextStyle(fontSize: 20),
+                children: [
+                  const TextSpan(
+                    text: 'Total ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: utilServices.priceToCurrency(order.total),
+                  ),
+                ],
+              ),
+            ),
+            //Botao Pagamento
+            Visibility(
+              visible: order.status == 'pending_payment',
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                icon: Image.asset('assets/app_images/pix.png', height: 18),
+                label: const Text('Ver QR Code Pix'),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return PaymentDialog(order: order);
+                    },
+                  );
+                },
               ),
             )
           ],
