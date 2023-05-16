@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quitanda_app/src/config/custom_colors.dart';
 
+import 'package:quitanda_app/src/config/custom_colors.dart';
 import 'package:quitanda_app/src/models/item_model.dart';
 import 'package:quitanda_app/src/pages/product/product_screen.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
@@ -9,9 +9,12 @@ class ItemTile extends StatelessWidget {
   ItemTile({
     Key? key,
     required this.item,
+    required this.cartAnimationMethod,
   }) : super(key: key);
 
   final ItemModel item;
+  final void Function(GlobalKey) cartAnimationMethod;
+  final GlobalKey imageGk = GlobalKey();
 
   final UtilServices utilServices = UtilServices();
 
@@ -46,7 +49,10 @@ class ItemTile extends StatelessWidget {
                   Expanded(
                     child: Hero(
                       tag: item.imageUrl,
-                      child: Image.asset(item.imageUrl),
+                      child: Image.asset(
+                        item.imageUrl,
+                        key: imageGk,
+                      ),
                     ),
                   ),
                   //nome
@@ -82,11 +88,14 @@ class ItemTile extends StatelessWidget {
             ),
           ),
         ),
+        //Botao add ao carrinho
         Positioned(
           top: 4,
           right: 4,
           child: GestureDetector(
-            onTap: () {},
+            onTap: () {
+              cartAnimationMethod(imageGk);
+            },
             child: Container(
               height: 40,
               width: 35,
