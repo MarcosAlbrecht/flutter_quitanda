@@ -10,7 +10,7 @@ import 'package:quitanda_app/src/config/app_data.dart' as appData;
 import 'package:quitanda_app/src/pages/home/components/item_tile.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
 
-import '../common_widgets/app_name_wodget.dart';
+import '../common_widgets/app_name_widget.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
