@@ -6,7 +6,7 @@ import 'package:quitanda_app/src/pages/common_widgets/custom_text_field.dart';
 import 'package:quitanda_app/src/config/custom_colors.dart';
 import 'package:quitanda_app/src/pages_routes/app_pages.dart';
 
-import '../common_widgets/app_name_widget.dart';
+import '../../common_widgets/app_name_widget.dart';
 
 class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
@@ -135,7 +135,7 @@ class SignInScreen extends StatelessWidget {
                                       } else {
                                         print('Campos não válidos');
                                       }
-                                      Get.offNamed(PagesRoutes.baseRoute);
+                                      //Get.offNamed(PagesRoutes.baseRoute);
                                     },
                               child: authController.isLoading.value
                                   ? const CircularProgressIndicator()
