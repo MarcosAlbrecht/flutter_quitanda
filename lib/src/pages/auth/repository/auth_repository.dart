@@ -1,4 +1,8 @@
 import 'package:quitanda_app/src/constants/endpoints.dart';
+import 'package:quitanda_app/src/models/user_model.dart';
+import 'package:quitanda_app/src/pages/auth/repository/auth_errors.dart'
+    as authErrors;
+import 'package:quitanda_app/src/pages/auth/result/auth_result.dart';
 import 'package:quitanda_app/src/services/http_manager.dart';
 
 class AuthRepository {
@@ -14,10 +18,12 @@ class AuthRepository {
     );
 
     if (result['result'] != null) {
-      print('Sigin funcionou');
-      print(result['result']);
+      //print(result['result']);
+
+      final user = UserModel.fromJson(result['result']);
+      return AuthResult.success(user);
     } else {
-      print(result['error']);
+      return AuthResult.error(authErrors.authErrorString(result['error']));
     }
   }
 }
