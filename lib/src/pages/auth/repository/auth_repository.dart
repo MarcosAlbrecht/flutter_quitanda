@@ -7,13 +7,35 @@ import 'package:quitanda_app/src/services/http_manager.dart';
 
 class AuthRepository {
   final HttpManager _httpManager = HttpManager();
+
+  //Realiza o login com o token salvo
+  Future<AuthResult> validateToken(String token) async {
+    final result = await _httpManager.restRequest(
+      url: EndPoints.validateToken,
+      method: HttpMethods.post,
+      headers: {
+        'X-Parse-Session-Token': token,
+      },
+    );
+
+    if (result['result'] != null) {
+      //print(result['result']);
+
+      final user = UserModel.fromJson(result['result']);
+      return AuthResult.success(user);
+    } else {
+      return AuthResult.error(authErrors.authErrorString(result['error']));
+    }
+  }
+
+  //Realiza o login com email e senha
   Future signIn({required String email, required String password}) async {
     final result = await _httpManager.restRequest(
       method: HttpMethods.post,
       url: EndPoints.signin,
       body: {
-        "email": email,
-        "password": password,
+        'email': email,
+        'password': password,
       },
     );
 

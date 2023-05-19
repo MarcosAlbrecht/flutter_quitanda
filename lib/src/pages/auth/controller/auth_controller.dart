@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:quitanda_app/src/constants/storage_keys.dart';
 import 'package:quitanda_app/src/models/user_model.dart';
 import 'package:quitanda_app/src/pages/auth/repository/auth_repository.dart';
 import 'package:quitanda_app/src/pages/auth/result/auth_result.dart';
@@ -13,6 +14,53 @@ class AuthController extends GetxController {
 
   UserModel user = UserModel();
 
+  @override
+  void onInit() {
+    super.onInit();
+
+    validateToken();
+  }
+
+  Future<void> validateToken() async {
+    //authRepository.validateToken();
+    String? token = await utilServices.getLocalData(key: StorageKeys.token);
+    if (token == null) {
+      Get.offAllNamed(PagesRoutes.signInRoute);
+      return;
+    }
+
+    AuthResult result = await authRepository.validateToken(token);
+
+    result.when(
+      success: (user) {
+        this.user = user;
+        saveTokenAndProceedToBase();
+      },
+      error: (message) {
+        signOut();
+      },
+    );
+  }
+
+  Future<void> signOut() async {
+    //Zerar o user
+    user = UserModel();
+    //Remover o token localmente
+    await utilServices.removeLocalData(key: StorageKeys.token);
+    //Ir para o login
+    Get.offAllNamed(PagesRoutes.signInRoute);
+  }
+
+  void saveTokenAndProceedToBase() {
+    //salvar o token
+    utilServices.saveLocalData(
+      key: StorageKeys.token,
+      data: user.token!,
+    );
+    //ir para a tela base
+    Get.offAllNamed(PagesRoutes.baseRoute);
+  }
+
   Future<void> signIn({
     required String email,
     required String password,
@@ -24,8 +72,10 @@ class AuthController extends GetxController {
 
     result.when(
       success: (user) {
+        user.token;
         this.user = user;
-        Get.offAllNamed(PagesRoutes.baseRoute);
+        saveTokenAndProceedToBase();
+        //Get.offAllNamed(PagesRoutes.baseRoute);
         //print(user);
       },
       error: (message) {

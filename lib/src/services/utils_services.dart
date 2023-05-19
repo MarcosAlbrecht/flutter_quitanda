@@ -1,11 +1,27 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class UtilServices {
+  //Salvar dados localmente
+  final storage = const FlutterSecureStorage();
+  Future<void> saveLocalData(
+      {required String key, required String data}) async {
+    await storage.write(key: key, value: data);
+  }
+
+  //Recuperar dados armazenados localmente
+  Future<String?> getLocalData({required key}) async {
+    return await storage.read(key: key);
+  }
+
+  //Remover dados salvos localmente
+  Future<void> removeLocalData({required String key}) async {
+    await storage.delete(key: key);
+  }
+
   //R$ VALOR
   String priceToCurrency(double price) {
     NumberFormat numberFormat = NumberFormat.simpleCurrency(
