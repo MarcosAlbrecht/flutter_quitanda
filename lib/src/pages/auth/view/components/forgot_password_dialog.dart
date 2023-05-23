@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:quitanda_app/src/pages/auth/controller/auth_controller.dart';
 import 'package:quitanda_app/src/pages/common_widgets/custom_text_field.dart';
 import 'package:quitanda_app/src/services/validators.dart';
 
 class ForgotPasswordDialog extends StatelessWidget {
   final emailController = TextEditingController();
+  final authController = Get.find<AuthController>();
 
   ForgotPasswordDialog({
     required String email,
@@ -11,6 +14,8 @@ class ForgotPasswordDialog extends StatelessWidget {
   }) : super(key: key) {
     emailController.text = email;
   }
+
+  final _formFieldKey = GlobalKey<FormFieldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +61,7 @@ class ForgotPasswordDialog extends StatelessWidget {
 
                 // Campo de email
                 CustomTextField(
+                  formFieldKey: _formFieldKey,
                   controller: emailController,
                   icon: Icons.email,
                   label: 'Email',
@@ -73,7 +79,12 @@ class ForgotPasswordDialog extends StatelessWidget {
                       color: Colors.green,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    if (_formFieldKey.currentState!.validate()) {
+                      authController.resetPassword(emailController.text);
+                      Get.back(result: true);
+                    }
+                  },
                   child: const Text(
                     'Recuperar',
                     style: TextStyle(

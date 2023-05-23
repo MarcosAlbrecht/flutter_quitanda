@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:quitanda_app/src/config/app_data.dart';
 import 'package:quitanda_app/src/constants/endpoints.dart';
 import 'package:quitanda_app/src/models/user_model.dart';
@@ -46,6 +48,7 @@ class AuthRepository {
     return handleUserOrError(result);
   }
 
+  //realiza a criação do usuário
   Future<AuthResult> signUp(UserModel user) async {
     final result = await _httpManager.restRequest(
       url: EndPoints.signup,
@@ -53,5 +56,13 @@ class AuthRepository {
       body: user.toJson(),
     );
     return handleUserOrError(result);
+  }
+
+  Future<void> resetPassword(String email) async {
+    await _httpManager.restRequest(
+      url: EndPoints.resetPassword,
+      method: HttpMethods.post,
+      body: {'email': email},
+    );
   }
 }

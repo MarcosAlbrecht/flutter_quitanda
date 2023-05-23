@@ -2,9 +2,11 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quitanda_app/src/pages/auth/controller/auth_controller.dart';
+import 'package:quitanda_app/src/pages/auth/view/components/forgot_password_dialog.dart';
 import 'package:quitanda_app/src/pages/common_widgets/custom_text_field.dart';
 import 'package:quitanda_app/src/config/custom_colors.dart';
 import 'package:quitanda_app/src/pages_routes/app_pages.dart';
+import 'package:quitanda_app/src/services/utils_services.dart';
 import 'package:quitanda_app/src/services/validators.dart';
 
 import '../../common_widgets/app_name_widget.dart';
@@ -12,6 +14,8 @@ import '../../common_widgets/app_name_widget.dart';
 class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
   final _formKey = GlobalKey<FormState>();
+
+  final utilServices = UtilServices();
 
   //controlador de campos
   final emailController = TextEditingController();
@@ -142,7 +146,21 @@ class SignInScreen extends StatelessWidget {
                             style: TextStyle(
                                 color: CustomColors.customContrastColor),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                            final bool? result = await showDialog(
+                              context: context,
+                              builder: (_) {
+                                return ForgotPasswordDialog(
+                                    email: emailController.text);
+                              },
+                            );
+
+                            if (result ?? false) {
+                              utilServices.showToast(
+                                  message:
+                                      'Um link de recuperação foi enviado para o seu meail');
+                            }
+                          },
                         ),
                       ),
                       //Divisor login e criar conta
