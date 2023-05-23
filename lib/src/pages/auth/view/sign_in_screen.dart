@@ -120,7 +120,6 @@ class SignInScreen extends StatelessWidget {
                                       } else {
                                         print('Campos não válidos');
                                       }
-                                      //Get.offNamed(PagesRoutes.baseRoute);
                                     },
                               child: authController.isLoading.value
                                   ? const CircularProgressIndicator()

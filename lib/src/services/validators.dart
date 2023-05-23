@@ -33,7 +33,7 @@ String? phoneValidator(String? phone) {
   if (phone == null || phone.isEmpty) {
     return 'Digite um número de celular';
   }
-  if (!phone.isPhoneNumber || phone.length < 14) {
+  if (!phone.isPhoneNumber || phone.length < 13) {
     return 'Digite um número válido';
   }
   return null;
