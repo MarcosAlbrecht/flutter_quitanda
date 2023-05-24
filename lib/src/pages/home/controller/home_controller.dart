@@ -66,7 +66,7 @@ class HomeController extends GetxController {
     homeResult.when(
       success: (data) {
         allCategories.assignAll(data);
-        print('All categories: $allCategories');
+        //print('All categories: $allCategories');
 
         if (allCategories.isEmpty) {
           return;

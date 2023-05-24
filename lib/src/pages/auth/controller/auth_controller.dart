@@ -80,7 +80,7 @@ class AuthController extends GetxController {
       },
       error: (message) {
         utilServices.showToast(message: message, isError: true);
-        print(message);
+        //print(message);
       },
     );
   }
@@ -97,7 +97,7 @@ class AuthController extends GetxController {
       saveTokenAndProceedToBase();
     }, error: (message) {
       utilServices.showToast(message: message, isError: true);
-      print(message);
+      //print(message);
     });
   }
 
