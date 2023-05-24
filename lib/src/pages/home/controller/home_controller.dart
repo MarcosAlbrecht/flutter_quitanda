@@ -13,6 +13,8 @@ class HomeController extends GetxController {
   CategoryModel? currentCategory;
   List<ItemModel> get allProducts => currentCategory?.items ?? [];
 
+  RxString searchTitle = ''.obs;
+
   bool get isLastPage {
     if (currentCategory!.items.length < itemsPerPage) return true;
 
@@ -36,6 +38,13 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    debounce(
+      searchTitle,
+      (_) => filterByTitle(),
+      time: const Duration(milliseconds: 600),
+    );
+
     getAllCategories();
   }
 
@@ -71,6 +80,36 @@ class HomeController extends GetxController {
     );
   }
 
+  void filterByTitle() {
+    //Remover todos os proutos das categorias
+    for (var category in allCategories) {
+      category.items.clear();
+      category.pagination = 0;
+    }
+    if (searchTitle.value.isEmpty) {
+      allCategories.removeAt(0);
+    } else {
+      //criar nova categoria com todos
+      CategoryModel? c = allCategories.firstWhereOrNull((cat) => cat.id == '');
+      if (c == null) {
+        final allProductsCategory = CategoryModel(
+          title: 'Todos',
+          id: '',
+          items: [],
+          pagination: 0,
+        );
+        allCategories.insert(0, allProductsCategory);
+      } else {
+        c.items.clear();
+        c.pagination = 0;
+      }
+    }
+
+    currentCategory = allCategories.first;
+    update();
+    getAllProducts();
+  }
+
   void loadMoreProducts() {
     currentCategory!.pagination++;
     getAllProducts(canLoad: false);
@@ -82,11 +121,19 @@ class HomeController extends GetxController {
     }
 
     Map<String, dynamic> body = {
-      "page": currentCategory!.pagination,
-      "title": null,
-      "categoryId": currentCategory!.id,
-      "itemsPerPage": 6
+      'page': currentCategory!.pagination,
+      'title': null,
+      'categoryId': currentCategory!.id,
+      'itemsPerPage': 6
     };
+
+    if (searchTitle.value.isNotEmpty) {
+      body['title'] = searchTitle.value;
+
+      if (currentCategory!.id == '') {
+        body.remove('categoryId');
+      }
+    }
 
     HomeResult<ItemModel> result = await homeRepository.getAllProducts(body);
     setLoading(false, isProduct: true);
