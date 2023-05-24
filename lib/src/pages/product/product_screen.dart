@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:quitanda_app/src/config/custom_colors.dart';
 
 import 'package:quitanda_app/src/models/item_model.dart';
+import 'package:quitanda_app/src/pages/base/controller/navigation_controller.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
 
 import '../common_widgets/quantity_widget.dart';
@@ -23,6 +25,8 @@ class _ProductScreenState extends State<ProductScreen> {
 
   int cartItemQuantity = 1;
 
+  final navigationController = Get.find<NavigationController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +38,7 @@ class _ProductScreenState extends State<ProductScreen> {
             Expanded(
               child: Hero(
                 tag: widget.item.imageUrl,
-                child: Image.asset(widget.item.imageUrl),
+                child: Image.network(widget.item.imageUrl),
               ),
             ),
             Expanded(
@@ -112,7 +116,13 @@ class _ProductScreenState extends State<ProductScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          //Fechar a tela
+                          Get.back();
+                          navigationController
+                              .navigatePageView(NavigationTabs.cart);
+                          //Carrinnho
+                        },
                         icon: const Icon(Icons.shopping_cart_outlined),
                       ),
                     )
