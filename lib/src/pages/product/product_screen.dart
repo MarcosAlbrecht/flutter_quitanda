@@ -1,20 +1,21 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quitanda_app/src/config/custom_colors.dart';
 
+import 'package:quitanda_app/src/config/custom_colors.dart';
 import 'package:quitanda_app/src/models/item_model.dart';
 import 'package:quitanda_app/src/pages/base/controller/navigation_controller.dart';
+import 'package:quitanda_app/src/pages/cart/controller/cart_controller.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
 
 import '../common_widgets/quantity_widget.dart';
 
 class ProductScreen extends StatefulWidget {
-  const ProductScreen({
+  ProductScreen({
     Key? key,
-    required this.item,
   }) : super(key: key);
 
-  final ItemModel item;
+  final ItemModel item = Get.arguments;
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
@@ -25,6 +26,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
   int cartItemQuantity = 1;
 
+  final cartController = Get.find<CartController>();
   final navigationController = Get.find<NavigationController>();
 
   @override
@@ -119,6 +121,12 @@ class _ProductScreenState extends State<ProductScreen> {
                         onPressed: () {
                           //Fechar a tela
                           Get.back();
+
+                          cartController.addItemToCart(
+                            item: widget.item,
+                            quantity: cartItemQuantity,
+                          );
+
                           navigationController
                               .navigatePageView(NavigationTabs.cart);
                           //Carrinnho

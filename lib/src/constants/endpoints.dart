@@ -8,4 +8,6 @@ abstract class EndPoints {
   static const getAllCategories = '$baseUrl/get-category-list';
   static const getAllProducts = '$baseUrl/get-product-list';
   static const getCartItems = '$baseUrl/get-cart-items';
+  static const addItemToCart = '$baseUrl/add-item-to-cart';
+  static const changeItemQuantity = '$baseUrl/modify-item-quantity';
 }

@@ -1,11 +1,14 @@
+import 'package:quitanda_app/src/config/app_data.dart';
 import 'package:quitanda_app/src/constants/endpoints.dart';
+import 'package:quitanda_app/src/models/cart_item_model.dart';
 import 'package:quitanda_app/src/pages/cart/cart_result/cart_result.dart';
 import 'package:quitanda_app/src/services/http_manager.dart';
 
 class CartRepository {
   final _httpManager = HttpManager();
 
-  Future getCartItems({required String token, required String userId}) async {
+  Future<CartResult<List<CartItemModel>>> getCartItems(
+      {required String token, required String userId}) async {
     final result = await _httpManager.restRequest(
       url: EndPoints.getCartItems,
       method: HttpMethods.post,
@@ -14,9 +17,60 @@ class CartRepository {
     );
 
     if (result['result'] != null) {
-      print(result['result']);
+      List<CartItemModel> data =
+          List<Map<String, dynamic>>.from(result['result'])
+              .map(CartItemModel.fromJson)
+              .toList();
+      return CartResult<List<CartItemModel>>.success(data);
     } else {
-      print('Ocorreu um erro ao resuperar os itens do carinho');
+      return CartResult.error(
+          'Ocorreu um erro ao recuperar os dados do carrinho');
+    }
+  }
+
+  Future<bool> changeItemQuantity({
+    required String token,
+    required String cartItemId,
+    required int quantity,
+  }) async {
+    final result = await _httpManager.restRequest(
+      url: EndPoints.changeItemQuantity,
+      method: HttpMethods.post,
+      body: {
+        'cartItemId': cartItemId,
+        'quantity': quantity,
+      },
+      headers: {
+        'X-Parse-Session-Token': token,
+      },
+    );
+
+    return result.isEmpty;
+  }
+
+  Future<CartResult<String>> addItemToCart({
+    required String userId,
+    required String token,
+    required String productId,
+    required int quantity,
+  }) async {
+    final result = await _httpManager.restRequest(
+      url: EndPoints.addItemToCart,
+      method: HttpMethods.post,
+      body: {
+        'user': userId,
+        'quantity': quantity,
+        'productId': productId,
+      },
+      headers: {'X-Parse-Session-Token': token},
+    );
+
+    if (result['result'] != null) {
+      //adicionar produto
+      return CartResult<String>.success(result['result']['id']);
+    } else {
+      //erro
+      return CartResult.error('Não foi possível adicionar item no carrinho');
     }
   }
 }

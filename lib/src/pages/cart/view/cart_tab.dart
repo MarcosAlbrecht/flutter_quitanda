@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:quitanda_app/src/config/app_data.dart' as appData;
 import 'package:quitanda_app/src/config/custom_colors.dart';
 import 'package:quitanda_app/src/models/cart_item_model.dart';
+import 'package:quitanda_app/src/pages/cart/controller/cart_controller.dart';
 import 'package:quitanda_app/src/pages/cart/view/components/cart_tile.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
 
@@ -17,15 +19,6 @@ class CartTab extends StatefulWidget {
 class _CartTabState extends State<CartTab> {
   final UtilServices utilServices = UtilServices();
   double totalPrice = 0.0;
-
-  void removeItemFromCart(CartItemModel cartItem) {
-    setState(() {
-      appData.cartItems.remove(cartItem);
-
-      utilServices.showToast(
-          message: '${cartItem.item.itemName} removido(a) do carrinho');
-    });
-  }
 
   double cartTotalPrice() {
     double total = 0.0;
@@ -46,12 +39,15 @@ class _CartTabState extends State<CartTab> {
         children: [
           //Lista de item do carrinho
           Expanded(
-            child: ListView.builder(
-              itemCount: appData.cartItems.length,
-              itemBuilder: (_, index) {
-                return CartTile(
-                  cartItem: appData.cartItems[index],
-                  remove: removeItemFromCart,
+            child: GetBuilder<CartController>(
+              builder: (controller) {
+                return ListView.builder(
+                  itemCount: controller.cartItems.length,
+                  itemBuilder: (_, index) {
+                    return CartTile(
+                      cartItem: controller.cartItems[index],
+                    );
+                  },
                 );
               },
             ),
@@ -81,13 +77,19 @@ class _CartTabState extends State<CartTab> {
                   'Total Geral',
                   style: TextStyle(fontSize: 12),
                 ),
-                Text(
-                  utilServices.priceToCurrency(cartTotalPrice()),
-                  style: TextStyle(
-                    fontSize: 23,
-                    color: CustomColors.customSwatchColor,
-                    fontWeight: FontWeight.bold,
-                  ),
+                GetBuilder<CartController>(
+                  builder: (controller) {
+                    return Text(
+                      utilServices.priceToCurrency(
+                        controller.cartTotalPrice(),
+                      ),
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: CustomColors.customSwatchColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(
                   height: 50,
