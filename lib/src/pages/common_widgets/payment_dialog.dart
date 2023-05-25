@@ -1,6 +1,5 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-
 import 'package:quitanda_app/src/models/order_model.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
 
@@ -40,10 +39,10 @@ class PaymentDialog extends StatelessWidget {
                   ),
                 ),
                 //qrcode
-                QrImage(
-                  data: 'asd329n49f8j2398jfd023d',
-                  version: QrVersions.auto,
-                  size: 200.0,
+                Image.memory(
+                  utilServices.decodeQrCodeImage(order.qrCodeImage),
+                  height: 200,
+                  width: 200,
                 ),
                 //vencimento
                 Text(
@@ -78,7 +77,11 @@ class PaymentDialog extends StatelessWidget {
                     Icons.copy,
                     size: 15,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    FlutterClipboard.copy(order.copyAndPaste);
+                    utilServices.showToast(
+                        message: 'QR Code copiado com sucesso');
+                  },
                 )
               ],
             ),

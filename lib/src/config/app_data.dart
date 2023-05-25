@@ -118,6 +118,7 @@ List<OrderModel> orders = [
         id: '',
       ),
     ],
+    qrCodeImage: '',
   ),
 
   // Pedido 02
@@ -139,5 +140,6 @@ List<OrderModel> orders = [
         id: '',
       ),
     ],
+    qrCodeImage: '',
   ),
 ];
