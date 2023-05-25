@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:quitanda_app/src/config/custom_colors.dart';
 import 'package:quitanda_app/src/models/cart_item_model.dart';
+import 'package:quitanda_app/src/pages/cart/controller/cart_controller.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
 
 import '../../../common_widgets/quantity_widget.dart';
@@ -19,6 +21,7 @@ class CartTile extends StatefulWidget {
 
 class _CartTileState extends State<CartTile> {
   final UtilServices utilServices = UtilServices();
+  final controller = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +45,17 @@ class _CartTileState extends State<CartTile> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        //quantidade
         trailing: QuantityWidget(
           suffixText: widget.cartItem.item.unit,
           value: widget.cartItem.quantity,
           isRemovable: true,
-          result: (quantity) {},
+          result: (quantity) {
+            controller.changeItemQuantity(
+              item: widget.cartItem,
+              quantity: quantity,
+            );
+          },
         ),
       ),
     );

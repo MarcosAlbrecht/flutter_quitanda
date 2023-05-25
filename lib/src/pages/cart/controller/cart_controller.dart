@@ -28,7 +28,7 @@ class CartController extends GetxController {
   double cartTotalPrice() {
     double total = 0;
     for (var item in cartItems) {
-      total += (item.totalPrice() * item.quantity);
+      total += (item.totalPrice());
     }
     return total;
   }
@@ -42,6 +42,21 @@ class CartController extends GetxController {
       cartItemId: item.id,
       quantity: quantity,
     );
+
+    if (result) {
+      if (quantity == 0) {
+        cartItems.removeWhere((cartItem) => cartItem.id == item.id);
+      } else {
+        cartItems.firstWhere((cartItem) => cartItem.id == item.id).quantity =
+            quantity;
+      }
+
+      update();
+    } else {
+      utilServices.showToast(
+          message: 'Ocorreu um erro ao alterar a quantidade do produto',
+          isError: true);
+    }
 
     return result;
   }
@@ -78,14 +93,8 @@ class CartController extends GetxController {
       //ja existe na listagem do carrinho
       final product = cartItems[itemIndex];
 
-      final result = await changeItemQuantity(
+      await changeItemQuantity(
           item: product, quantity: (product.quantity + quantity));
-      if (result) {
-        cartItems[itemIndex].quantity += quantity;
-      } else {
-        utilServices.showToast(
-            message: 'Ocorreu um erro ao alterar a quanitade do produto');
-      }
     } else {
       //novo item no carrinho
       final CartResult<String> result = await cartRepository.addItemToCart(
