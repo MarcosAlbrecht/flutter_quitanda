@@ -4,10 +4,12 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quitanda_app/src/config/custom_colors.dart';
+import 'package:quitanda_app/src/pages/base/controller/navigation_controller.dart';
+import 'package:quitanda_app/src/pages/cart/controller/cart_controller.dart';
 import 'package:quitanda_app/src/pages/common_widgets/app_name_widget.dart';
 import 'package:quitanda_app/src/pages/common_widgets/custom_shimmer.dart';
 import 'package:quitanda_app/src/pages/home/view/components/category_tile.dart';
-// ignore: library_prefixes
+// ignore: library_prefixes, unused_import
 import 'package:quitanda_app/src/config/app_data.dart' as appData;
 import 'package:quitanda_app/src/pages/home/view/components/item_tile.dart';
 import 'package:quitanda_app/src/pages/home/controller/home_controller.dart';
@@ -24,6 +26,7 @@ class _HomeTabState extends State<HomeTab> {
   GlobalKey<CartIconKey> globalKeyCartItem = GlobalKey<CartIconKey>();
 
   final searchController = TextEditingController();
+  final navigationController = Get.find<NavigationController>();
 
   late Function(GlobalKey) runAddToCartAnimation;
 
@@ -48,24 +51,30 @@ class _HomeTabState extends State<HomeTab> {
               top: 15,
               right: 15,
             ),
-            child: GestureDetector(
-              onTap: () {},
-              child: Badge(
-                badgeStyle: BadgeStyle(
-                  badgeColor: CustomColors.customContrastColor,
-                ),
-                badgeContent: const Text(
-                  '2',
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                ),
-                child: AddToCartIcon(
-                  key: globalKeyCartItem,
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: CustomColors.customSwatchColor,
+            child: GetBuilder<CartController>(
+              builder: (controller) {
+                return GestureDetector(
+                  onTap: () {
+                    navigationController.navigatePageView(NavigationTabs.cart);
+                  },
+                  child: Badge(
+                    badgeStyle: BadgeStyle(
+                      badgeColor: CustomColors.customContrastColor,
+                    ),
+                    badgeContent: Text(
+                      controller.cartItems.length.toString(),
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                    child: AddToCartIcon(
+                      key: globalKeyCartItem,
+                      icon: Icon(
+                        Icons.shopping_cart,
+                        color: CustomColors.customSwatchColor,
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         ],
@@ -184,6 +193,15 @@ class _HomeTabState extends State<HomeTab> {
                       ? Visibility(
                           visible: (controller.currentCategory?.items ?? [])
                               .isNotEmpty,
+                          replacement: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.search_off,
+                                  color: CustomColors.customSwatchColor,
+                                ),
+                                const Text('Não há itens para apresentar'),
+                              ]),
                           child: GridView.builder(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                             physics: const BouncingScrollPhysics(),
@@ -206,15 +224,6 @@ class _HomeTabState extends State<HomeTab> {
                               );
                             },
                           ),
-                          replacement: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.search_off,
-                                  color: CustomColors.customSwatchColor,
-                                ),
-                                const Text('Não há itens para apresentar'),
-                              ]),
                         )
                       : GridView.count(
                           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),

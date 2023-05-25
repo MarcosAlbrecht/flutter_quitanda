@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import 'package:quitanda_app/src/config/custom_colors.dart';
 import 'package:quitanda_app/src/models/item_model.dart';
+import 'package:quitanda_app/src/pages/cart/controller/cart_controller.dart';
 import 'package:quitanda_app/src/pages/product/product_screen.dart';
 import 'package:quitanda_app/src/pages_routes/app_pages.dart';
 import 'package:quitanda_app/src/services/utils_services.dart';
@@ -27,6 +28,8 @@ class _ItemTileState extends State<ItemTile> {
   final UtilServices utilServices = UtilServices();
 
   IconData tileIcon = Icons.add_shopping_cart_outlined;
+
+  final cartController = Get.find<CartController>();
 
   Future<void> switchIcon() async {
     setState(() => tileIcon = Icons.check);
@@ -113,6 +116,9 @@ class _ItemTileState extends State<ItemTile> {
               child: InkWell(
                 onTap: () {
                   switchIcon();
+
+                  cartController.addItemToCart(item: widget.item);
+
                   widget.cartAnimationMethod(imageGk);
                 },
                 child: Ink(
