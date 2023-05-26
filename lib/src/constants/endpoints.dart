@@ -13,4 +13,5 @@ abstract class EndPoints {
   static const checkout = '$baseUrl/checkout';
   static const getAllOrders = '$baseUrl/get-orders';
   static const getOrderItems = '$baseUrl/get-order-items';
+  static const changePassword = '$baseUrl/change-password';
 }
