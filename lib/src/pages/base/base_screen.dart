@@ -4,7 +4,7 @@ import 'package:quitanda_app/src/pages/base/controller/navigation_controller.dar
 import 'package:quitanda_app/src/pages/cart/view/cart_tab.dart';
 import 'package:quitanda_app/src/pages/home/view/home_tab.dart';
 
-import 'package:quitanda_app/src/pages/orders/orders_tab.dart';
+import 'package:quitanda_app/src/pages/orders/view/orders_tab.dart';
 
 import '../profile/profile_tab.dart';
 
